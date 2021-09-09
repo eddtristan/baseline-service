@@ -40,17 +40,19 @@ public class ApplicationController {
     Double yearInputs = 0d;
     Double finalAmount;
     Double gain = 0d;
+    Integer yearInvestment = 1;
     
     if (calculator.validateInput(initialInvestmentDto)) {
       for (InvestmentYieldDto investmentYieldDto : 
           calculator.createRevenueGrid(initialInvestmentDto)) {
-        System.out.println("Año = " + investmentYieldDto.getYearInput()
+        System.out.println("Año = " + yearInvestment
                             + " Saldo inicial = $" + investmentYieldDto.getInitialInvestment()
                             + " Aportación = $" + investmentYieldDto.getYearInput()
                             + " Rendimiento = $" + investmentYieldDto.getInvestmentYield() 
                             + " Saldo final = $" + investmentYieldDto.getFinalBalance());
         yearInputs += investmentYieldDto.getYearInput();
         gain = investmentYieldDto.getFinalBalance();
+        yearInvestment++;
       }
       finalAmount = gain - initialInvestment - yearInputs;
       System.out.println("Ganancia por inversión: $" + finalAmount);
