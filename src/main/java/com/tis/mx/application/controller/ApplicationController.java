@@ -16,7 +16,9 @@
 
 package com.tis.mx.application.controller;
 
-import com.tis.mx.application.service.CompoundInterestCalculator;
+import com.tis.mx.application.dto.InitialInvestmentDto;
+import com.tis.mx.application.dto.InvestmentYieldDto;
+import com.tis.mx.application.service.impl.CompoundInterestCalculatorImpl;
 
 /**
  * The Class ApplicationController.
@@ -24,7 +26,7 @@ import com.tis.mx.application.service.CompoundInterestCalculator;
 public class ApplicationController {
 
   /** The calculator. */
-  private CompoundInterestCalculator calculator;
+  private static CompoundInterestCalculatorImpl calculator = new CompoundInterestCalculatorImpl();
 
   /**
    * The main method.
@@ -32,7 +34,31 @@ public class ApplicationController {
    * @param args the arguments
    */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
+    InitialInvestmentDto initialInvestmentDto = 
+        new InitialInvestmentDto(5000d, 3000d, 1, 21f, 5);
+    Double initialInvestment = initialInvestmentDto.getInitialInvestment();
+    Double yearInputs = 0d;
+    Double finalAmount;
+    Double gain = 0d;
+    
+    if (calculator.validateInput(initialInvestmentDto)) {
+      for (InvestmentYieldDto investmentYieldDto : 
+          calculator.createRevenueGrid(initialInvestmentDto)) {
+        System.out.println("Año = " + investmentYieldDto.getYearInput()
+                            + " Saldo inicial = $" + investmentYieldDto.getInitialInvestment()
+                            + " Aportación = $" + investmentYieldDto.getYearInput()
+                            + " Rendimiento = $" + investmentYieldDto.getInvestmentYield() 
+                            + " Saldo final = $" + investmentYieldDto.getFinalBalance());
+        yearInputs += investmentYieldDto.getYearInput();
+        gain = investmentYieldDto.getFinalBalance();
+      }
+      finalAmount = gain - initialInvestment - yearInputs;
+      System.out.println("Ganancia por inversión: $" + finalAmount);
+      System.out.println("Monto final: $" + gain);
+    } else {
+      System.out.println("No es posible procesar su solicitud con los datos proporcionados");
+    }
+    
 
   }
 
