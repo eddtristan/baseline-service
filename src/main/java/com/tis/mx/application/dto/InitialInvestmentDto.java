@@ -50,23 +50,16 @@ import lombok.ToString;
  * Instantiates a new initial investment dto.
  */
 @NoArgsConstructor
-
-/**
- * To string.
- *
- * @return the java.lang. string
- */
-@ToString
 public class InitialInvestmentDto {
 
   /** The initial investment. */
   private Double initialInvestment;
   
   /** The year input. */
-  private Double yearInput;
+  private Double yearlyInput;
   
   /** The year input increment. */
-  private Integer yearInputIncrement;
+  private Integer yearlyInputIncrement;
   
   /** The investment yield. */
   private Float investmentYield;

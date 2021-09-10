@@ -18,7 +18,8 @@ package com.tis.mx.application.controller;
 
 import com.tis.mx.application.dto.InitialInvestmentDto;
 import com.tis.mx.application.dto.InvestmentYieldDto;
-import com.tis.mx.application.service.impl.CompoundInterestCalculatorImpl;
+import com.tis.mx.application.service.CompoundInterestCalculator;
+import java.util.List;
 
 /**
  * The Class ApplicationController.
@@ -26,42 +27,30 @@ import com.tis.mx.application.service.impl.CompoundInterestCalculatorImpl;
 public class ApplicationController {
 
   /** The calculator. */
-  private static CompoundInterestCalculatorImpl calculator = new CompoundInterestCalculatorImpl();
-
+  private CompoundInterestCalculator calculator;
+  
   /**
-   * The main method.
+   * Instantiates a new application controller.
    *
-   * @param args the arguments
+   * @param calculator the calculator
    */
-  public static void main(String[] args) {
-    InitialInvestmentDto initialInvestmentDto = 
-        new InitialInvestmentDto(5000d, 3000d, 1, 21f, 5);
-    Double initialInvestment = initialInvestmentDto.getInitialInvestment();
-    Double yearInputs = 0d;
-    Double finalAmount;
-    Double gain = 0d;
-    Integer yearInvestment = 1;
-    
-    if (calculator.validateInput(initialInvestmentDto)) {
-      for (InvestmentYieldDto investmentYieldDto : 
-          calculator.createRevenueGrid(initialInvestmentDto)) {
-        System.out.println("Año = " + yearInvestment
-                            + " Saldo inicial = $" + investmentYieldDto.getInitialInvestment()
-                            + " Aportación = $" + investmentYieldDto.getYearInput()
-                            + " Rendimiento = $" + investmentYieldDto.getInvestmentYield() 
-                            + " Saldo final = $" + investmentYieldDto.getFinalBalance());
-        yearInputs += investmentYieldDto.getYearInput();
-        gain = investmentYieldDto.getFinalBalance();
-        yearInvestment++;
-      }
-      finalAmount = gain - initialInvestment - yearInputs;
-      System.out.println("Ganancia por inversión: $" + finalAmount);
-      System.out.println("Monto final: $" + gain);
-    } else {
-      System.out.println("No es posible procesar su solicitud con los datos proporcionados");
+  public ApplicationController(CompoundInterestCalculator calculator) {
+    this.calculator = calculator;
+  }
+  
+  /**
+   * Creates the table yield.
+   *
+   * @param initialInvestment the initial investment
+   * @return the list
+   * @throws Exception the exception
+   */
+  public List<InvestmentYieldDto> createTableYield(InitialInvestmentDto initialInvestment) {
+    if (!calculator.validateInput(initialInvestment)) {
+      throw new CalculatorInputException(
+          "No es posible procesar su solicitud con los datos proporcionados.");
     }
-    
-
+    return calculator.createRevenueGrid(initialInvestment);     
   }
 
 }

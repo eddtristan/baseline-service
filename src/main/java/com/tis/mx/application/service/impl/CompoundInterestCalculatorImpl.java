@@ -35,8 +35,8 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
   @Override
   public List<InvestmentYieldDto> createRevenueGrid(InitialInvestmentDto initialInvestment) {
     Double initialInvest = initialInvestment.getInitialInvestment();
-    Double yearInput = initialInvestment.getYearInput();
-    Integer yearInputIncrement = initialInvestment.getYearInputIncrement();
+    Double yearInput = initialInvestment.getYearlyInput();
+    Integer yearInputIncrement = initialInvestment.getYearlyInputIncrement();
     Integer investmentYears = initialInvestment.getInvestmentYears();
     Float investmentYield = initialInvestment.getInvestmentYield();
     Double finalBalance;
@@ -62,17 +62,25 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
    */
   @Override
   public boolean validateInput(InitialInvestmentDto input) {
-    Double yearInput = input.getYearInput();
-    Integer yearInputIncrement = input.getYearInputIncrement();
+    
+    this.setDefaults(input);
+    
+    return (input.getInitialInvestment() >= 100 
+        && input.getYearlyInput() >= 0
+        && input.getYearlyInputIncrement() >= 0
+        && input.getInvestmentYears() > 0  
+        && input.getInvestmentYield() > 0);
+  }
+  
+  private void setDefaults(InitialInvestmentDto input) {
+    Double yearInput = input.getYearlyInput();
+    Integer yearInputIncrement = input.getYearlyInputIncrement();
     
     yearInput = yearInput != null ? yearInput : 0;
     yearInputIncrement = yearInputIncrement != null ? yearInputIncrement : 0;
     
-    return (input.getInitialInvestment() > 1000 
-        && yearInput >= 0
-        && yearInputIncrement >= 0
-        && input.getInvestmentYears() > 0  
-        && input.getInvestmentYield() > 0);
+    input.setYearlyInput(yearInput);
+    input.setYearlyInputIncrement(yearInputIncrement);
   }
 
 }
