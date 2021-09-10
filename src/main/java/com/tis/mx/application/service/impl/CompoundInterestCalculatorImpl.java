@@ -19,6 +19,7 @@ import com.tis.mx.application.dto.InitialInvestmentDto;
 import com.tis.mx.application.dto.InvestmentYieldDto;
 import com.tis.mx.application.service.CompoundInterestCalculator;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class CompoundInterestCalculatorImpl.
@@ -32,8 +33,25 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
    * @return the array list
    */
   @Override
-  public ArrayList<InvestmentYieldDto> createRevenueGrid(InitialInvestmentDto initialInvestment) {
-    return null;
+  public List<InvestmentYieldDto> createRevenueGrid(InitialInvestmentDto initialInvestment) {
+    Double initialInvest = initialInvestment.getInitialInvestment();
+    Double yearInput = initialInvestment.getYearlyInput();
+    Integer yearInputIncrement = initialInvestment.getYearlyInputIncrement();
+    Integer investmentYears = initialInvestment.getInvestmentYears();
+    Float investmentYield = initialInvestment.getInvestmentYield();
+    Double finalBalance;
+    Double yieldInvest;
+    List<InvestmentYieldDto> investmentList = new ArrayList<>();
+    for (int i = 0; i < investmentYears; i++) {
+      yieldInvest = (initialInvest + yearInput) * (investmentYield / 100);
+      finalBalance = initialInvest + yearInput + yieldInvest;
+      investmentList
+          .add(new InvestmentYieldDto(i + 1, initialInvest, yearInput, yieldInvest, finalBalance));
+      
+      yearInput = (yearInput) * (1 + (yearInputIncrement / 100d));
+      initialInvest = finalBalance;
+    }
+    return investmentList;
   }
 
   /**
@@ -44,7 +62,25 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
    */
   @Override
   public boolean validateInput(InitialInvestmentDto input) {
-    return false;
+    
+    this.setDefaults(input);
+    
+    return (input.getInitialInvestment() >= 100 
+        && input.getYearlyInput() >= 0
+        && input.getYearlyInputIncrement() >= 0
+        && input.getInvestmentYears() > 0  
+        && input.getInvestmentYield() > 0);
+  }
+  
+  private void setDefaults(InitialInvestmentDto input) {
+    Double yearInput = input.getYearlyInput();
+    Integer yearInputIncrement = input.getYearlyInputIncrement();
+    
+    yearInput = yearInput != null ? yearInput : 0;
+    yearInputIncrement = yearInputIncrement != null ? yearInputIncrement : 0;
+    
+    input.setYearlyInput(yearInput);
+    input.setYearlyInputIncrement(yearInputIncrement);
   }
 
 }

@@ -45,18 +45,6 @@ import lombok.ToString;
  * @param finalBalance the final balance
  */
 @AllArgsConstructor
-
-/**
- * Instantiates a new investment yield dto.
- */
-@NoArgsConstructor
-
-/**
- * To string.
- *
- * @return the java.lang. string
- */
-@ToString
 public class InvestmentYieldDto {
 
   /** The investment year. */
@@ -66,7 +54,7 @@ public class InvestmentYieldDto {
   private Double initialInvestment;
   
   /** The year input. */
-  private Double yearInput;
+  private Double yearlyInput;
   
   /** The investment yield. */
   private Double investmentYield;
