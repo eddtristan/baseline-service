@@ -20,10 +20,16 @@ import com.tis.mx.application.dto.InitialInvestmentDto;
 import com.tis.mx.application.dto.InvestmentYieldDto;
 import com.tis.mx.application.service.CompoundInterestCalculator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * The Class ApplicationController.
  */
+@RestController
 public class ApplicationController {
 
   /** The calculator. */
@@ -45,7 +51,10 @@ public class ApplicationController {
    * @return the list
    * @throws Exception the exception
    */
-  public List<InvestmentYieldDto> createTableYield(InitialInvestmentDto initialInvestment) {
+  @PostMapping(value = "/api/v1/investors/calculators/ci")
+  public List<InvestmentYieldDto> createTableYield(
+      @RequestHeader(value = "Content-Type", required = false) String contentType,
+      @RequestBody InitialInvestmentDto initialInvestment) {
     if (!calculator.validateInput(initialInvestment)) {
       throw new CalculatorInputException(
           "No es posible procesar su solicitud con los datos proporcionados.");

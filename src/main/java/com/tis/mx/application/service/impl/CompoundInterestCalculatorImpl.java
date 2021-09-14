@@ -20,10 +20,12 @@ import com.tis.mx.application.dto.InvestmentYieldDto;
 import com.tis.mx.application.service.CompoundInterestCalculator;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * The Class CompoundInterestCalculatorImpl.
  */
+@Service
 public class CompoundInterestCalculatorImpl implements CompoundInterestCalculator {
 
   /**
@@ -65,7 +67,7 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
     
     this.setDefaults(input);
     
-    return (input.getInitialInvestment() >= 100 
+    return (input.getInitialInvestment() >= 1000 
         && input.getYearlyInput() >= 0
         && input.getYearlyInputIncrement() >= 0
         && input.getInvestmentYears() > 0  
