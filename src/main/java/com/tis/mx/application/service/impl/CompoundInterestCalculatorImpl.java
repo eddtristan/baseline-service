@@ -45,7 +45,7 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
     Double yieldInvest;
     List<InvestmentYieldDto> investmentList = new ArrayList<>();
     for (int i = 0; i < investmentYears; i++) {
-      yieldInvest = (initialInvest + yearInput) * (investmentYield / 100);
+      yieldInvest = ((initialInvest + yearInput) * (investmentYield / 100));
       finalBalance = initialInvest + yearInput + yieldInvest;
       investmentList
           .add(new InvestmentYieldDto(i + 1, initialInvest, yearInput, yieldInvest, finalBalance));
