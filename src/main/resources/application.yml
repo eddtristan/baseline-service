@@ -1,2 +1,35 @@
 server:
   port: 8080
+
+spring:
+  application:
+    name: baseline-service-etm
+  cloud:
+    config:
+      uri: http://localhost:8888
+
+security:
+  basic:
+    enabled: false
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 35
+      maximunSize: 35
+  command:
+    createRevenueGrid:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1500
+          semaphore:
+            maxConcurrentRequest: 500
+      circuitBreaker:
+        sleepWindowInMilliseconds: 5000      
