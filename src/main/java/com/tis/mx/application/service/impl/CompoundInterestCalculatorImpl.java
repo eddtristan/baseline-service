@@ -10,11 +10,13 @@
 *
 * Nombre de archivo: CompoundInterestCalculatorImpl.java
 * Autor: etristan
-* Fecha de creación: 7 sep. 2021
+* Fecha de creación: 15 sep. 2021
 */
+
 
 package com.tis.mx.application.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tis.mx.application.dto.InitialInvestmentDto;
 import com.tis.mx.application.dto.InvestmentYieldDto;
 import com.tis.mx.application.service.CompoundInterestCalculator;
@@ -32,9 +34,10 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
    * Creates the revenue grid.
    *
    * @param initialInvestment the initial investment
-   * @return the array list
+   * @return the list
    */
   @Override
+  @HystrixCommand(commandKey = "createRevenueGrid", fallbackMethod = "falbackRevenueGrid")
   public List<InvestmentYieldDto> createRevenueGrid(InitialInvestmentDto initialInvestment) {
     Double initialInvest = initialInvestment.getInitialInvestment();
     Double yearInput = initialInvestment.getYearlyInput();
@@ -49,11 +52,21 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
       finalBalance = initialInvest + yearInput + yieldInvest;
       investmentList
           .add(new InvestmentYieldDto(i + 1, initialInvest, yearInput, yieldInvest, finalBalance));
-      
+
       yearInput = (yearInput) * (1 + (yearInputIncrement / 100d));
       initialInvest = finalBalance;
     }
     return investmentList;
+  }
+
+  /**
+   * Falback revenue grid.
+   *
+   * @param initialInvestmentDto the initial investment dto
+   * @return the list
+   */
+  public List<InvestmentYieldDto> falbackRevenueGrid(InitialInvestmentDto initialInvestmentDto) {
+    return null;
   }
 
   /**
@@ -64,23 +77,26 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
    */
   @Override
   public boolean validateInput(InitialInvestmentDto input) {
-    
+
     this.setDefaults(input);
-    
-    return (input.getInitialInvestment() >= 1000 
-        && input.getYearlyInput() >= 0
-        && input.getYearlyInputIncrement() >= 0
-        && input.getInvestmentYears() > 0  
+
+    return (input.getInitialInvestment() >= 1000 && input.getYearlyInput() >= 0
+        && input.getYearlyInputIncrement() >= 0 && input.getInvestmentYears() > 0
         && input.getInvestmentYield() > 0);
   }
-  
+
+  /**
+   * Sets the defaults.
+   *
+   * @param input the new defaults
+   */
   private void setDefaults(InitialInvestmentDto input) {
     Double yearInput = input.getYearlyInput();
     Integer yearInputIncrement = input.getYearlyInputIncrement();
-    
+
     yearInput = yearInput != null ? yearInput : 0;
     yearInputIncrement = yearInputIncrement != null ? yearInputIncrement : 0;
-    
+
     input.setYearlyInput(yearInput);
     input.setYearlyInputIncrement(yearInputIncrement);
   }
